@@ -58,7 +58,8 @@ async def leave_vc(chat_id: int) -> None:
 async def on_stream_end(_: object, update: StreamEnded) -> None:
     """
     Automatically play the next song when the current stream ends.
-    AutoPlay mode also refetches songs when queue becomes low.
+    If the queue is empty, AutoPlay (when ON) adds one related song
+    before we give up and leave the voice chat.
     """
 
     chat_id = update.chat_id
@@ -75,30 +76,30 @@ async def on_stream_end(_: object, update: StreamEnded) -> None:
         except Exception:
             pass
 
-    # ── AutoPlay Refetch Check ────────────────────────────────────────────────
-    try:
-        from ShizuMusic.core.autoplay import is_autoplay, maybe_refetch
-
-        if is_autoplay(chat_id):
-
-            # Fetch more songs in background if queue is getting low
-            asyncio.create_task(
-                maybe_refetch(chat_id, "🔁 AutoPlay", 0)
-            )
-
-    except Exception as ap_err:
-        LOGGER.warning(f"[AutoPlay] Refetch Check Error: {ap_err}")
-
-    # ── Next Song ─────────────────────────────────────────────────────────────
-    # Wait a little so autoplay fetch can complete
-    await asyncio.sleep(2)
-
     nxt = peek_current(chat_id)
 
-    # Play next song
+    # ── Queue is empty: let AutoPlay try to add ONE related song ────────────────
+    if not nxt:
+        try:
+            from ShizuMusic.core.autoplay import autoplay_next
+
+            if await autoplay_next(chat_id, done):
+                nxt = peek_current(chat_id)
+
+        except Exception as ap_err:
+            LOGGER.warning(f"[AutoPlay] autoplay_next error: {ap_err}")
+
+    # ── Play next song ───────────────────────────────────────────────────────
     if nxt:
 
         from ShizuMusic.core.player import play_song
+
+        # start getting the *next* suggestion ready while this song plays
+        try:
+            from ShizuMusic.core.autoplay import schedule_prefetch
+            schedule_prefetch(chat_id, nxt)
+        except Exception:
+            pass
 
         try:
             msg = await rich_send(
@@ -121,68 +122,14 @@ async def on_stream_end(_: object, update: StreamEnded) -> None:
                 + rich_note(f"<code>{rich_esc(e)}</code>"),
             )
 
-    else:
+        return
 
-        # Queue finished but autoplay may still fetch songs
-        try:
-            from ShizuMusic.core.autoplay import (
-                is_autoplay,
-                _autoplay_fetching,
-            )
+    # ── Queue completely finished (AutoPlay OFF or nothing usable found) ───────
+    await leave_vc(chat_id)
 
-            if is_autoplay(chat_id):
+    await rich_send(
+        bot, chat_id,
+        rich_heading("❍ ǫᴜᴇᴜᴇ ғɪɴɪsʜᴇᴅ", level=3)
+        + rich_note("ʟᴇғᴛ ᴠᴏɪᴄᴇ ᴄʜᴀᴛ."),
+    )
 
-                # Wait if background fetching is running (up to 20 seconds)
-                for _ in range(20):
-                    if _autoplay_fetching.get(chat_id):
-                        await asyncio.sleep(1)
-                    else:
-                        break
-
-                # Give one more second after fetching finishes
-                await asyncio.sleep(1)
-
-                nxt2 = peek_current(chat_id)
-
-                # Play fetched song
-                if nxt2:
-
-                    from ShizuMusic.core.player import play_song
-
-                    msg2 = await rich_send(
-                        bot, chat_id,
-                        rich_heading("❍ ɴᴇxᴛ ᴛʀᴀᴄᴋ", level=3)
-                        + rich_kv_table([("ᴛɪᴛʟᴇ", f"<code>{rich_esc(nxt2['title'])}</code>")]),
-                    )
-
-                    await play_song(chat_id, msg2, nxt2)
-                    return
-
-                # If still nothing after waiting, try one more fetch
-                from ShizuMusic.core.autoplay import maybe_refetch
-                await maybe_refetch(chat_id, "🔁 AutoPlay", 0)
-                await asyncio.sleep(5)
-
-                nxt3 = peek_current(chat_id)
-                if nxt3:
-                    from ShizuMusic.core.player import play_song
-                    msg3 = await rich_send(
-                        bot, chat_id,
-                        rich_heading("❍ ɴᴇxᴛ ᴛʀᴀᴄᴋ", level=3)
-                        + rich_kv_table([("ᴛɪᴛʟᴇ", f"<code>{rich_esc(nxt3['title'])}</code>")]),
-                    )
-                    await play_song(chat_id, msg3, nxt3)
-                    return
-
-        except Exception:
-            pass
-
-        # Queue completely finished
-        await leave_vc(chat_id)
-
-        await rich_send(
-            bot, chat_id,
-            rich_heading("❍ ǫᴜᴇᴜᴇ ғɪɴɪsʜᴇᴅ", level=3)
-            + rich_note("ʟᴇғᴛ ᴠᴏɪᴄᴇ ᴄʜᴀᴛ."),
-        )
-        

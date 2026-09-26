@@ -11,10 +11,11 @@ import random
 from pyrogram import filters
 from pyrogram.errors import ChatAdminRequired
 from pyrogram.enums import ParseMode
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
+from pyrogram.types import Message
 
 import config
 from ShizuMusic import bot
+from ShizuMusic.utils.buttons import added_by_kb, make_admin_kb
 from ShizuMusic.utils.db import (
     add_broadcast_chat,
     add_served_chat,
@@ -68,9 +69,7 @@ async def bot_added_watcher(_, message: Message) -> None:
                 )
                 + rich_note("ᴡɪᴛʜᴏᴜᴛ ᴀᴅᴍɪɴ ᴘᴇʀᴍs sᴏᴍᴇ ғᴇᴀᴛᴜʀᴇs ᴡᴏɴ'ᴛ ᴡᴏʀᴋ! 🚫")
             )
-            admin_kb = InlineKeyboardMarkup([[
-                InlineKeyboardButton("⚡ ᴍᴀᴋᴇ ᴍᴇ ᴀᴅᴍɪɴ ⚡", url=f"tg://user?id={me.id}")
-            ]])
+            admin_kb = make_admin_kb(me.id)
             try:
                 await rich_send(bot, chat_id, admin_request_text, reply_markup=admin_kb)
             except Exception:
@@ -109,12 +108,10 @@ async def bot_added_watcher(_, message: Message) -> None:
                 ("ᴍᴇᴍʙᴇʀs", str(count)),
                 ("ᴀᴅᴅᴇᴅ ʙʏ", added_by_mention),
             ]
-            log_kb = InlineKeyboardMarkup([[
-                InlineKeyboardButton(
-                    f"👤 {added_by.first_name if added_by else 'ᴜsᴇʀ'}",
-                    user_id=added_by.id if added_by else config.OWNER_ID,
-                )
-            ]]) if added_by else None
+            log_kb = (
+                added_by_kb(added_by.id, added_by.first_name)
+                if added_by else None
+            )
 
             try:
                 if chat_photo:

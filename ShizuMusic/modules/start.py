@@ -9,15 +9,21 @@
 import asyncio
 import random
 
-from pyrogram import enums, filters
+from pyrogram import filters
 from pyrogram.enums import ChatType, ParseMode
 from pyrogram.errors import FloodWait
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
+from pyrogram.types import Message
 
 import config
 from ShizuMusic import bot
 from config import START_PHOTOS
 from ShizuMusic.modules.block import user_allowed
+from ShizuMusic.utils.buttons import (
+    help_menu_kb,
+    make_admin_kb,
+    start_group_kb,
+    start_private_kb,
+)
 from ShizuMusic.utils.db import add_broadcast_chat, add_served_chat, add_served_user
 from ShizuMusic.utils.rich_ui import (
     rich_details,
@@ -98,28 +104,7 @@ async def start_handler(_, message: Message) -> None:
             + rich_note(f"ᴘᴏᴡᴇʀᴇᴅ ʙʏ » <a href='https://t.me/PBXCHATS'>sʜɪᴢᴜ-ᴍᴜsɪᴄ™</a>")
             + _support_updates_pills()
         )
-        kb = InlineKeyboardMarkup([
-            [InlineKeyboardButton("⛩️ ᴧᴅᴅ мᴇ ʙᴧʙʏ ⛩️",
-                                  url=f"{config.BOT_LINK}?startgroup=true",
-                                  style=enums.ButtonStyle.PRIMARY)],
-            [
-                InlineKeyboardButton("🍬 sᴜᴘᴘᴏʀᴛ 🍬", url=config.SUPPORT_GROUP,
-                                     style=enums.ButtonStyle.SUCCESS),
-                InlineKeyboardButton("🍹 ᴜᴘᴅᴀᴛᴇs 🍹",  url=config.UPDATES_CHANNEL,
-                                     style=enums.ButtonStyle.SUCCESS),
-            ],
-            [InlineKeyboardButton("🏩 ʜᴇʟᴘ & ᴄᴏᴍᴍᴀɴᴅs 🏩",
-                                  callback_data="show_help",
-                                  style=enums.ButtonStyle.PRIMARY)],
-            [
-                InlineKeyboardButton("🫧 ᴏᴡɴᴇʀ 🫧",
-                                     url=f"tg://user?id={config.OWNER_ID}",
-                                     style=enums.ButtonStyle.DEFAULT),
-                InlineKeyboardButton("🍡 sᴏᴜʀᴄᴇ 🍡",
-                                     url="https://github.com/Badmunda05/ShizuMusic/fork",
-                                     style=enums.ButtonStyle.DEFAULT),
-            ],
-        ])
+        kb = start_private_kb()
 
         try:
             sent = await rich_send(bot, chat_id, caption, reply_markup=kb)
@@ -164,18 +149,7 @@ async def start_handler(_, message: Message) -> None:
             )
             + _support_updates_pills()
         )
-        kb = InlineKeyboardMarkup([
-            [
-                InlineKeyboardButton("⛩️ ᴧᴅᴅ мᴇ ʙᴧʙʏ ⛩️",
-                                     url=f"{config.BOT_LINK}?startgroup=true",
-                                     style=enums.ButtonStyle.PRIMARY),
-                InlineKeyboardButton("🍬 sᴜᴘᴘᴏʀᴛ 🍬", url=config.SUPPORT_GROUP,
-                                     style=enums.ButtonStyle.SUCCESS),
-            ],
-            [InlineKeyboardButton("🏩 ʜᴇʟᴘ & ᴄᴏᴍᴍᴀɴᴅs 🏩",
-                                  callback_data="show_help",
-                                  style=enums.ButtonStyle.PRIMARY)],
-        ])
+        kb = start_group_kb()
 
         try:
             sent = await rich_send(bot, chat_id, caption, reply_markup=kb)
@@ -193,13 +167,7 @@ async def start_handler(_, message: Message) -> None:
             )
             + rich_note("ᴡɪᴛʜᴏᴜᴛ ᴀᴅᴍɪɴ ᴘᴇʀᴍs sᴏᴍᴇ ғᴇᴀᴛᴜʀᴇs ᴡᴏɴ'ᴛ ᴡᴏʀᴋ! 🚫")
         )
-        admin_kb = InlineKeyboardMarkup([[
-            InlineKeyboardButton(
-                "⚡ ᴍᴀᴋᴇ ᴍᴇ ᴀᴅᴍɪɴ ⚡",
-                url=f"tg://user?id={(await bot.get_me()).id}",
-                style=enums.ButtonStyle.DANGER,
-            )
-        ]])
+        admin_kb = make_admin_kb((await bot.get_me()).id, styled=True)
         try:
             admin_sent = await rich_send(
                 bot, chat_id,
@@ -229,26 +197,7 @@ async def help_handler(_, message: Message) -> None:
     except Exception:
         pass
 
-    kb = InlineKeyboardMarkup([
-        [
-            InlineKeyboardButton("ᴧᴅᴍɪɴ",    callback_data="help_admin", style=enums.ButtonStyle.PRIMARY),
-            InlineKeyboardButton("ᴧ-ᴘʟᴀʏ",   callback_data="help_autoplay", style=enums.ButtonStyle.PRIMARY),
-            InlineKeyboardButton("ɢ-ᴄᴧsᴛ",   callback_data="help_gcast", style=enums.ButtonStyle.PRIMARY),
-        ],
-        [
-            InlineKeyboardButton("ʙʟ-ᴄʜᴧᴛ",  callback_data="help_blchat", style=enums.ButtonStyle.PRIMARY),
-            InlineKeyboardButton("ʙʟ-ᴜsᴇʀs", callback_data="help_blusers", style=enums.ButtonStyle.PRIMARY),
-            InlineKeyboardButton("ᴘɪɴɢ",     callback_data="help_ping", style=enums.ButtonStyle.PRIMARY),
-        ],
-        [
-            InlineKeyboardButton("ᴘʟᴀʏ",     callback_data="help_play", style=enums.ButtonStyle.PRIMARY),
-            InlineKeyboardButton("sᴘᴇᴇᴅ",    callback_data="help_speed", style=enums.ButtonStyle.PRIMARY),
-            InlineKeyboardButton("ɪɴғᴏ",     callback_data="help_info", style=enums.ButtonStyle.PRIMARY),
-        ],
-        [
-            InlineKeyboardButton("⌯ ᴄʟᴏsᴇ ⌯", callback_data="close_help", style=enums.ButtonStyle.DANGER),
-        ],
-    ])
+    kb = help_menu_kb()
 
     photo = random.choice(config.START_PHOTOS)
 

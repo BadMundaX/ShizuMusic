@@ -10,12 +10,13 @@ import time
 
 from pyrogram import filters
 from pyrogram.enums import ParseMode
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
+from pyrogram.types import Message
 
 from ShizuMusic import bot, call_py, LOGGER
 from ShizuMusic.core.queue import peek_current
 from ShizuMusic.modules.block import group_allowed, user_allowed
-from ShizuMusic.utils.formatters import fmt_time, parse_dur, progress_bar, short
+from ShizuMusic.utils.buttons import player_controls_kb
+from ShizuMusic.utils.formatters import fmt_time, parse_dur, short
 from ShizuMusic.utils.rich_ui import (
     rich_edit,
     rich_esc,
@@ -118,17 +119,7 @@ async def _seek_to(chat_id: int, target_sec: int, message: Message) -> None:
             ("sᴇᴇᴋᴇᴅ ᴛᴏ", f"<code>{fmt_time(target_sec)}</code>"),
         ])
     )
-    btns = [
-        InlineKeyboardButton("▷",   callback_data="resume"),
-        InlineKeyboardButton("II",  callback_data="pause"),
-        InlineKeyboardButton("‣‣I", callback_data="skip"),
-        InlineKeyboardButton("▢",   callback_data="stop"),
-    ]
-    bar = progress_bar(target_sec, total_sec)
-    kb  = InlineKeyboardMarkup([
-        [InlineKeyboardButton(bar, callback_data="noop")],
-        btns,
-    ])
+    kb = player_controls_kb(target_sec, total_sec)
     try:
         await pm.delete()
     except Exception:

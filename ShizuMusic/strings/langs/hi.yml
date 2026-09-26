@@ -1,0 +1,33 @@
+# --------------------------------------------------------------------------------
+#  ShizuMusic © 2026 — हिन्दी (Hindi)
+#
+#  Demo language file: this is exactly what you drop in to add a language —
+#  a "name:" key + as many translated keys as you have time for. Anything
+#  left out here is filled in from en.yml automatically, so a half-finished
+#  translation still works, it just shows English for the untranslated bits.
+# --------------------------------------------------------------------------------
+
+name: "🇮🇳 हिन्दी"
+
+autoplay_title:       "🔁 ऑटोप्ले"
+autoplay_status_on:   "ऑन ✅"
+autoplay_status_off:  "ऑफ़ ❌"
+autoplay_kv_status:   "स्थिति"
+autoplay_kv_lang:     "भाषा"
+autoplay_kv_mood:     "मूड"
+
+autoplay_admin_only_title: "⛔ सिर्फ़ एडमिन"
+autoplay_admin_only_note:  "/autoplay सिर्फ़ ग्रुप एडमिन इस्तेमाल कर सकते हैं"
+
+autoplay_enabled_title: "🔁 ऑटोप्ले चालू"
+autoplay_enabled_note:  "द्वारा » {0}\nक्यू खत्म होने पर मिलते-जुलते गाने अपने आप चलते रहेंगे।"
+
+autoplay_disabled_title: "❍ ऑटोप्ले बंद"
+autoplay_disabled_note:  "द्वारा » {0}"
+
+# note: autoplay_usage_note, autoplay_status_note, autoplay_lang_set_title,
+# and the rest are NOT translated yet — they'll just show in English until
+# someone fills them in here. That's the fallback working as intended.
+
+lang_1: "» इस चैट के लिए भाषा चुनें:"
+lang_2: "» भाषा बदल दी गई है।"

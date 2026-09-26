@@ -6,13 +6,11 @@
 #  from this source code is strictly prohibited.
 # --------------------------------------------------------------------------------
 
-import asyncio
-
 from pyrogram import filters
 from pyrogram.enums import ParseMode
 from pyrogram.types import Message
 
-from ShizuMusic import bot, call_py
+from ShizuMusic import bot
 from ShizuMusic.core.player import play_song
 from ShizuMusic.core.queue import peek_current, pop_current, queue_size
 from ShizuMusic.modules.block import group_allowed, user_allowed
@@ -60,20 +58,28 @@ async def skip_cmd(_, message: Message) -> None:
     skipped = pop_current(chat_id)
 
     try:
-        await call_py.leave_call(chat_id)
-    except Exception:
-        pass
-
-    await asyncio.sleep(2)
-
-    try:
         delete_file(skipped.get("file_path", ""))
     except Exception:
         pass
 
     nxt = peek_current(chat_id)
 
+    if not nxt:
+        # queue is empty: let AutoPlay (if ON) add one related song
+        try:
+            from ShizuMusic.core.autoplay import autoplay_next
+            if await autoplay_next(chat_id, skipped):
+                nxt = peek_current(chat_id)
+        except Exception:
+            pass
+
     if nxt:
+        try:
+            from ShizuMusic.core.autoplay import schedule_prefetch
+            schedule_prefetch(chat_id, nxt)
+        except Exception:
+            pass
+
         await rich_edit(
             sm,
             rich_heading("⏭ ᴛʀᴀᴄᴋ sᴋɪᴘᴘᴇᴅ", level=3)

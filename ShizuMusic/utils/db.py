@@ -441,6 +441,98 @@ def delete_chat_effects(chat_id: int) -> None:
     except Exception as e:
         logger.error(f"[DB] delete_chat_effects: {e}")
                
+# ── Chat UI Language (strings/langs/*.yml code, e.g. "en", "hi") ─────────────
+def get_chat_lang(chat_id: int) -> str:
+    col = _col("chat_lang")
+    if col is None:
+        return "en"
+    try:
+        doc = col.find_one({"_id": chat_id})
+        return doc.get("lang", "en") if doc else "en"
+    except Exception as e:
+        logger.error(f"[DB] get_chat_lang: {e}")
+        return "en"
+
+
+def set_chat_lang(chat_id: int, lang: str) -> None:
+    col = _col("chat_lang")
+    if col is None:
+        return
+    try:
+        col.update_one({"_id": chat_id}, {"$set": {"lang": lang}}, upsert=True)
+    except Exception as e:
+        logger.error(f"[DB] set_chat_lang: {e}")
+
+
+# ── AutoPlay Settings (on/off + language/mood filters) ───────────────────────
+# One document per chat:  { "_id": chat_id, "enabled": bool, "lang": str, "mood": str }
+
+def is_autoplay_enabled(chat_id: int) -> bool:
+    col = _col("autoplay")
+    if col is None:
+        return False
+    try:
+        doc = col.find_one({"_id": chat_id})
+        return bool(doc.get("enabled", False)) if doc else False
+    except Exception as e:
+        logger.error(f"[DB] is_autoplay_enabled: {e}")
+        return False
+
+
+def set_autoplay_enabled(chat_id: int, enabled: bool) -> None:
+    col = _col("autoplay")
+    if col is None:
+        return
+    try:
+        col.update_one({"_id": chat_id}, {"$set": {"enabled": enabled}}, upsert=True)
+    except Exception as e:
+        logger.error(f"[DB] set_autoplay_enabled: {e}")
+
+
+def get_autoplay_lang(chat_id: int) -> str:
+    col = _col("autoplay")
+    if col is None:
+        return "auto"
+    try:
+        doc = col.find_one({"_id": chat_id})
+        return doc.get("lang", "auto") if doc else "auto"
+    except Exception as e:
+        logger.error(f"[DB] get_autoplay_lang: {e}")
+        return "auto"
+
+
+def set_autoplay_lang(chat_id: int, lang: str) -> None:
+    col = _col("autoplay")
+    if col is None:
+        return
+    try:
+        col.update_one({"_id": chat_id}, {"$set": {"lang": lang}}, upsert=True)
+    except Exception as e:
+        logger.error(f"[DB] set_autoplay_lang: {e}")
+
+
+def get_autoplay_mood(chat_id: int) -> str:
+    col = _col("autoplay")
+    if col is None:
+        return "any"
+    try:
+        doc = col.find_one({"_id": chat_id})
+        return doc.get("mood", "any") if doc else "any"
+    except Exception as e:
+        logger.error(f"[DB] get_autoplay_mood: {e}")
+        return "any"
+
+
+def set_autoplay_mood(chat_id: int, mood: str) -> None:
+    col = _col("autoplay")
+    if col is None:
+        return
+    try:
+        col.update_one({"_id": chat_id}, {"$set": {"mood": mood}}, upsert=True)
+    except Exception as e:
+        logger.error(f"[DB] set_autoplay_mood: {e}")
+
+
 # ── Moderation Filter Settings (NSFW / Bad-word / Link / Document) ───────────
 # All four filters live as fields on the same per-chat document so a single
 # read/write covers the whole moderation panel. Each defaults to True (ON)

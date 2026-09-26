@@ -12,17 +12,14 @@ import time
 
 from pyrogram import filters
 from pyrogram.enums import ParseMode
-from pyrogram.types import (
-    InlineKeyboardButton,
-    InlineKeyboardMarkup,
-    Message,
-)
+from pyrogram.types import Message
 
 import config
 from ShizuMusic import bot
 from ShizuMusic.core.player import play_song
 from ShizuMusic.core.queue import add_to_queue, peek_current, queue_size
 from ShizuMusic.modules.block import group_allowed, user_allowed
+from ShizuMusic.utils.buttons import skip_clear_kb
 from ShizuMusic.utils.assistant import is_assistant_in, try_join_assistant
 from ShizuMusic.utils.db import add_served_chat, add_served_user
 from ShizuMusic.utils.formatters import fmt_time, iso_to_human, iso_to_sec, short
@@ -313,10 +310,7 @@ async def _process_play(message: Message, query: str, video: bool = False) -> No
     if pos == 1:
         await play_song(chat_id, pm, song)
     else:
-        kb = InlineKeyboardMarkup([[
-            InlineKeyboardButton("⌯ sᴋɪᴘ ⌯",  callback_data="skip"),
-            InlineKeyboardButton("⌯ ᴄʟᴇᴀʀ ⌯", callback_data="clear"),
-        ]])
+        kb = skip_clear_kb()
         await rich_send(
             bot, chat_id,
             rich_heading("❍ ᴀᴅᴅᴇᴅ ᴛᴏ ǫᴜᴇᴜᴇ", level=3)

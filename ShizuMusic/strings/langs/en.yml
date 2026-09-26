@@ -1,0 +1,59 @@
+# --------------------------------------------------------------------------------
+#  ShizuMusic © 2026 — English (base language)
+#
+#  This file is the SOURCE OF TRUTH for every key the bot uses. Every other
+#  language file borrows from this one for any key it hasn't translated yet,
+#  so keep this one complete.
+# --------------------------------------------------------------------------------
+
+name: "🇺🇸 English"
+
+# ── /autoplay ──────────────────────────────────────────────────────────────────
+autoplay_title:        "🔁 ᴀᴜᴛᴏᴘʟᴀʏ"
+autoplay_usage_title:  "🔁 ᴀᴜᴛᴏᴘʟᴀʏ ᴜsᴀɢᴇ"
+autoplay_usage_note: |-
+  <code>/autoplay on</code> · <code>/autoplay off</code>
+  <code>/autoplay lang hindi</code> (ᴏʀ <code>auto</code>)
+  <code>/autoplay mood sad</code> (ᴏʀ <code>any</code>)
+
+autoplay_status_note: |-
+  <code>/autoplay on</code> · <code>/autoplay off</code>
+  <code>/autoplay lang hindi</code> (ᴏʀ <code>auto</code>)
+  <code>/autoplay mood sad</code> (ᴏʀ <code>any</code>)
+
+  ʟᴀɴɢs: {0}
+  ᴍᴏᴏᴅs: {1}
+
+autoplay_status_on:    "ᴏɴ ✅"
+autoplay_status_off:   "ᴏғғ ❌"
+autoplay_kv_status:    "sᴛᴀᴛᴜs"
+autoplay_kv_lang:      "ʟᴀɴɢᴜᴀɢᴇ"
+autoplay_kv_mood:      "ᴍᴏᴏᴅ"
+
+autoplay_admin_only_title: "⛔ ᴀᴅᴍɪɴ ᴏɴʟʏ"
+autoplay_admin_only_note:  "ᴏɴʟʏ ɢʀᴏᴜᴘ ᴀᴅᴍɪɴs ᴄᴀɴ ᴜsᴇ /autoplay"
+
+autoplay_enabled_title:    "🔁 ᴀᴜᴛᴏᴘʟᴀʏ ᴇɴᴀʙʟᴇᴅ"
+autoplay_enabled_note:     "ʙʏ » {0}\nᴡʜᴇɴ ᴛʜᴇ ǫᴜᴇᴜᴇ ᴇɴᴅs, ʀᴇʟᴀᴛᴇᴅ sᴏɴɢs ᴡɪʟʟ ᴋᴇᴇᴘ ᴘʟᴀʏɪɴɢ."
+
+autoplay_disabled_title:   "❍ ᴀᴜᴛᴏᴘʟᴀʏ ᴅɪsᴀʙʟᴇᴅ"
+autoplay_disabled_note:    "ʙʏ » {0}"
+
+autoplay_unknown_lang_title: "❍ ᴜɴᴋɴᴏᴡɴ ʟᴀɴɢᴜᴀɢᴇ"
+autoplay_unknown_lang_note:  "ᴀᴠᴀɪʟᴀʙʟᴇ: {0}"
+autoplay_lang_set_title:     "🔁 ᴀᴜᴛᴏᴘʟᴀʏ ʟᴀɴɢᴜᴀɢᴇ"
+autoplay_lang_set_note:      "sᴇᴛ ᴛᴏ » <code>{0}</code>"
+
+autoplay_unknown_mood_title: "❍ ᴜɴᴋɴᴏᴡɴ ᴍᴏᴏᴅ"
+autoplay_unknown_mood_note:  "ᴀᴠᴀɪʟᴀʙʟᴇ: {0}"
+autoplay_mood_set_title:     "🔁 ᴀᴜᴛᴏᴘʟᴀʏ ᴍᴏᴏᴅ"
+autoplay_mood_set_note:      "sᴇᴛ ᴛᴏ » <code>{0}</code>"
+
+autoplay_someone: "sᴏᴍᴇᴏɴᴇ"
+
+# ── /language ──────────────────────────────────────────────────────────────────
+lang_1: "» ᴄʜᴏᴏsᴇ ᴀ ʟᴀɴɢᴜᴀɢᴇ ғᴏʀ ᴛʜɪs ᴄʜᴀᴛ:"
+lang_2: "» ʟᴀɴɢᴜᴀɢᴇ ᴜᴘᴅᴀᴛᴇᴅ."
+lang_3: "» sᴏᴍᴇᴛʜɪɴɢ ᴡᴇɴᴛ ᴡʀᴏɴɢ sᴇᴛᴛɪɴɢ ᴛʜᴀᴛ ʟᴀɴɢᴜᴀɢᴇ, ᴋᴇᴘᴛ ᴛʜᴇ ᴏʟᴅ ᴏɴᴇ."
+lang_4: "» ᴛʜɪs ɪs ᴀʟʀᴇᴀᴅʏ ᴛʜᴇ ᴄᴜʀʀᴇɴᴛ ʟᴀɴɢᴜᴀɢᴇ."
+lang_5: "⛔ ᴏɴʟʏ ɢʀᴏᴜᴘ ᴀᴅᴍɪɴs ᴄᴀɴ ᴄʜᴀɴɢᴇ ᴛʜᴇ ʟᴀɴɢᴜᴀɢᴇ."

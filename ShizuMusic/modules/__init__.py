@@ -11,6 +11,7 @@ ALL_MODULES = [
     "bot",
     "block",
     "effects",
+    "language",
     "play",
     "pause",
     "resume",

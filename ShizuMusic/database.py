@@ -47,6 +47,14 @@ from ShizuMusic.utils.db import (
     save_chat_effects,
     load_chat_effects,
     delete_chat_effects,
+    is_autoplay_enabled,
+    set_autoplay_enabled,
+    get_autoplay_lang,
+    set_autoplay_lang,
+    get_autoplay_mood,
+    set_autoplay_mood,
+    get_chat_lang,
+    set_chat_lang,
 )
 
 __all__ = [
@@ -60,4 +68,8 @@ __all__ = [
     "is_group_blocked", "block_group", "unblock_group", "get_blocked_groups",
     "is_user_blocked_db", "block_user", "unblock_user", "get_blocked_users",
     "save_chat_effects", "load_chat_effects", "delete_chat_effects",
+    "is_autoplay_enabled", "set_autoplay_enabled",
+    "get_autoplay_lang", "set_autoplay_lang",
+    "get_autoplay_mood", "set_autoplay_mood",
+    "get_chat_lang", "set_chat_lang",
 ]

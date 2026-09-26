@@ -13,15 +13,12 @@ Utility commands:
 """
 
 import config
-from pyrogram import enums, filters
-from pyrogram.types import (
-    InlineKeyboardButton,
-    InlineKeyboardMarkup,
-    Message,
-)
+from pyrogram import filters
+from pyrogram.types import Message
 
 from ShizuMusic import bot
 from ShizuMusic.modules.block import user_allowed
+from ShizuMusic.utils.buttons import repo_kb
 from ShizuMusic.utils.rich_ui import (
     rich_details,
     rich_heading,
@@ -38,34 +35,7 @@ SOURCE_URL = "https://github.com/Badmunda05/ShizuMusic/fork"
 @bot.on_message(filters.command("repo") & user_allowed)
 async def repo_cmd(_, message: Message) -> None:
 
-    kb = InlineKeyboardMarkup(
-        [
-            [
-                InlineKeyboardButton(
-                    "🍡 sᴏᴜʀᴄᴇ ᴄᴏᴅᴇ 🍡",
-                    url=SOURCE_URL,
-                    style=enums.ButtonStyle.PRIMARY,
-                ),
-                InlineKeyboardButton(
-                    "🔱 ғᴏʀᴋ 🔱",
-                    url=SOURCE_URL,
-                    style=enums.ButtonStyle.PRIMARY,
-                ),
-            ],
-            [
-                InlineKeyboardButton(
-                    "🍬 sᴜᴘᴘᴏʀᴛ 🍬",
-                    url=config.SUPPORT_GROUP,
-                    style=enums.ButtonStyle.SUCCESS,
-                ),
-                InlineKeyboardButton(
-                    "🍹 ᴜᴘᴅᴀᴛᴇs 🍹",
-                    url=config.UPDATES_CHANNEL,
-                    style=enums.ButtonStyle.SUCCESS,
-                ),
-            ],
-        ]
-    )
+    kb = repo_kb(SOURCE_URL)
 
     content = (
         rich_heading("🍡 sʜɪᴢᴜᴍᴜsɪᴄ sᴏᴜʀᴄᴇ", level=3)

@@ -159,6 +159,8 @@ if __name__ == "__main__":
             BotCommand("skip",   "✧ sᴋɪᴘ sᴏɴɢ ✧"),
             BotCommand("stop",   "✧ sᴛᴏᴘ & ᴄʟᴇᴀʀ ✧"),
             BotCommand("ping",   "✧ ʙᴏᴛ sᴛᴀᴛs ✧"),
+            BotCommand("autoplay", "✧ ᴀᴜᴛᴏ-ᴘʟᴀʏ ʀᴇʟᴀᴛᴇᴅ sᴏɴɢs ✧"),
+            BotCommand("language", "✧ ᴄʜᴀɴɢᴇ ʙᴏᴛ ʟᴀɴɢᴜᴀɢᴇ ✧"),
             BotCommand("repo",   "✧ sᴏᴜʀᴄᴇ ᴍᴜsɪᴄ ʙᴏᴛ ✧"),
         ])
         LOGGER.info("Bot commands set")

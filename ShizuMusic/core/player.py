@@ -12,11 +12,7 @@ import time
 
 from pyrogram.enums import ParseMode
 from pyrogram.raw.functions.phone import CreateGroupCall
-from pyrogram.types import (
-    InlineKeyboardButton,
-    InlineKeyboardMarkup,
-    Message,
-)
+from pyrogram.types import Message
 
 from pytgcalls import PyTgCalls
 from pytgcalls import filters as fl
@@ -45,6 +41,8 @@ from ShizuMusic import (
 from ShizuMusic.core.queue import (
     remove_from_queue,
 )
+
+from ShizuMusic.utils.buttons import player_controls_kb
 
 from ShizuMusic.utils.formatters import (
     parse_dur,
@@ -102,18 +100,8 @@ def _now_playing_content(song: dict) -> str:
     )
 
 
-def _now_playing_kb(elapsed: float, total: float) -> InlineKeyboardMarkup:
-    bar = progress_bar(elapsed, total)
-    btns = [
-        InlineKeyboardButton("▷", callback_data="resume"),
-        InlineKeyboardButton("II", callback_data="pause"),
-        InlineKeyboardButton("‣‣I", callback_data="skip"),
-        InlineKeyboardButton("▢", callback_data="stop"),
-    ]
-    return InlineKeyboardMarkup([
-        [InlineKeyboardButton(bar, callback_data="noop")],
-        btns,
-    ])
+def _now_playing_kb(elapsed: float, total: float):
+    return player_controls_kb(elapsed, total)
 
 
 # ─────────────────────────────────────────────

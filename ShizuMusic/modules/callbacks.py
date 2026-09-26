@@ -9,15 +9,15 @@
 import asyncio
 import random
 
-from pyrogram import enums
 from pyrogram.enums import ParseMode
-from pyrogram.types import CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup
+from pyrogram.types import CallbackQuery
 
 import config
 from ShizuMusic import bot, call_py
 from ShizuMusic.core.call import leave_vc
 from ShizuMusic.core.player import play_song
 from ShizuMusic.core.queue import clear_queue, peek_current, pop_current, queue_size
+from ShizuMusic.utils.buttons import help_back_kb, help_menu_home_kb, start_private_kb
 from ShizuMusic.utils.db import is_user_blocked_db
 from ShizuMusic.utils.formatters import short
 from ShizuMusic.utils.helpers import delete_file
@@ -69,33 +69,11 @@ def _category_html(title: str, desc: str, rows, photo: str = None) -> str:
 #
 # ──────────────────────────────────────────────────────────────────[...]
 
-_HELP_KB = InlineKeyboardMarkup([
-    [
-        InlineKeyboardButton("ᴧᴅᴍɪɴ",    callback_data="help_admin",    style=enums.ButtonStyle.PRIMARY),
-        InlineKeyboardButton("ᴧ-ᴘʟᴀʏ",   callback_data="help_autoplay", style=enums.ButtonStyle.PRIMARY),
-        InlineKeyboardButton("ɢ-ᴄᴧsᴛ",   callback_data="help_gcast",    style=enums.ButtonStyle.PRIMARY),
-    ],
-    [
-        InlineKeyboardButton("ʙʟ-ᴄʜᴧᴛ",  callback_data="help_blchat",  style=enums.ButtonStyle.PRIMARY),
-        InlineKeyboardButton("ʙʟ-ᴜsᴇʀs", callback_data="help_blusers", style=enums.ButtonStyle.PRIMARY),
-        InlineKeyboardButton("ᴘɪɴɢ",     callback_data="help_ping",    style=enums.ButtonStyle.PRIMARY),
-    ],
-    [
-        InlineKeyboardButton("ᴘʟᴀʏ",     callback_data="help_play",  style=enums.ButtonStyle.PRIMARY),
-        InlineKeyboardButton("sᴘᴇᴇᴅ",    callback_data="help_speed", style=enums.ButtonStyle.PRIMARY),
-        InlineKeyboardButton("ɪɴғᴏ",     callback_data="help_info",  style=enums.ButtonStyle.PRIMARY),
-    ],
-    [
-        InlineKeyboardButton("⌯ ʜᴏᴍᴇ ⌯", callback_data="go_back", style=enums.ButtonStyle.SUCCESS),
-    ],
-])
+_HELP_KB = help_menu_home_kb()
 
 # Reference screenshots show BOTH a Back and a Close row under every category
 # screen — matched here (Back = blue, Close = red).
-_BACK_KB = InlineKeyboardMarkup([
-    [InlineKeyboardButton("⌯ ʙᴀᴄᴋ ⌯",  callback_data="show_help", style=enums.ButtonStyle.PRIMARY)],
-    [InlineKeyboardButton("⌯ ᴄʟᴏsᴇ ⌯", callback_data="close_help", style=enums.ButtonStyle.DANGER)],
-])
+_BACK_KB = help_back_kb()
 
 # ── Help texts ────────────────────────────────────────────────────────────[...]
 # Same commands/wording as the old ASCII-box version, restructured into a real
@@ -121,12 +99,12 @@ _HELP_TEXTS = {
 
     "help_autoplay": {
         "title": "🔁 ᴀᴜᴛᴏᴘʟᴀʏ ᴄᴏᴍᴍᴀɴᴅs",
-        "desc": "ᴋᴇᴇᴘ ᴛʜᴇ ǫᴜᴇᴜᴇ ɢᴏɪɴɢ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟʏ ʙᴀsᴇᴅ ᴏɴ ᴀ ǫᴜᴇʀʏ.",
+        "desc": "ᴡʜᴇɴ ᴛʜᴇ ǫᴜᴇᴜᴇ ᴇɴᴅs, ᴋᴇᴇᴘ ᴘʟᴀʏɪɴɢ ʀᴇʟᴀᴛᴇᴅ sᴏɴɢs ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟʏ.",
         "rows": [
-            ("/autoplay &lt;query&gt;", "ᴄᴏɴᴛɪɴᴜᴏᴜsʟʏ ᴘʟᴀʏ sᴏɴɢs ʙᴀsᴇᴅ ᴏɴ ʏᴏᴜʀ ǫᴜᴇʀʏ"),
-            ("/end, /stop", "sᴛᴏᴘ ᴀᴜᴛᴏᴘʟᴀʏ &amp; ᴄʟᴇᴀʀ ǫᴜᴇᴜᴇ"),
-            ("<code>/autoplay sidhu moose wala</code>", "ᴇxᴀᴍᴘʟᴇ"),
-            ("<code>/autoplay arijit singh</code>", "ᴇxᴀᴍᴘʟᴇ"),
+            ("/autoplay", "sʜᴏᴡ ᴄᴜʀʀᴇɴᴛ sᴛᴀᴛᴜs"),
+            ("/autoplay on, /autoplay off", "ᴛᴏɢɢʟᴇ ᴀᴜᴛᴏᴘʟᴀʏ"),
+            ("/autoplay lang &lt;name&gt;", "ᴏɴʟʏ sᴜɢɢᴇsᴛ ᴀ ʟᴀɴɢᴜᴀɢᴇ (ᴏʀ <code>auto</code>)"),
+            ("/autoplay mood &lt;name&gt;", "ᴏɴʟʏ sᴜɢɢᴇsᴛ ᴀ ᴍᴏᴏᴅ (ᴏʀ <code>any</code>)"),
         ],
     },
 
@@ -273,13 +251,6 @@ async def on_callback(client, cbq: CallbackQuery) -> None:
         skipped = pop_current(chat_id)
 
         try:
-            await call_py.leave_call(chat_id)
-        except Exception:
-            pass
-
-        await asyncio.sleep(2)
-
-        try:
             delete_file(skipped.get("file_path", ""))
         except Exception:
             pass
@@ -294,7 +265,23 @@ async def on_callback(client, cbq: CallbackQuery) -> None:
         )
 
         nxt = peek_current(chat_id)
+
+        if not nxt:
+            # queue is empty: let AutoPlay (if ON) add one related song
+            try:
+                from ShizuMusic.core.autoplay import autoplay_next
+                if await autoplay_next(chat_id, skipped):
+                    nxt = peek_current(chat_id)
+            except Exception:
+                pass
+
         if nxt:
+            try:
+                from ShizuMusic.core.autoplay import schedule_prefetch
+                schedule_prefetch(chat_id, nxt)
+            except Exception:
+                pass
+
             await cbq.answer("ᴘʟᴀʏɪɴɢ ɴᴇxᴛ")
             dm = await rich_send(
                 bot, chat_id,
@@ -424,28 +411,7 @@ async def _go_back(cbq: CallbackQuery) -> None:
             + rich_note(f"ᴘᴏᴡᴇʀᴇᴅ ʙʏ » <a href='https://t.me/PBXCHATS'>sʜɪᴢᴜ-ᴍᴜsɪᴄ™</a>")
             + _support_updates_pills()
     )
-    kb = InlineKeyboardMarkup([
-        [InlineKeyboardButton("⛩️ ᴧᴅᴅ мᴇ ʙᴧʙʏ ⛩️",
-                              url=f"{config.BOT_LINK}?startgroup=true",
-                              style=enums.ButtonStyle.PRIMARY)],
-        [
-            InlineKeyboardButton("🍬 sᴜᴘᴘᴏʀᴛ 🍬", url=config.SUPPORT_GROUP,
-                                 style=enums.ButtonStyle.SUCCESS),
-            InlineKeyboardButton("🍹 ᴜᴘᴅᴀᴛᴇs 🍹",  url=config.UPDATES_CHANNEL,
-                                 style=enums.ButtonStyle.SUCCESS),
-        ],
-        [InlineKeyboardButton("🏩 ʜᴇʟᴘ & ᴄᴏᴍᴍᴀɴᴅs 🏩",
-                              callback_data="show_help",
-                              style=enums.ButtonStyle.PRIMARY)],
-        [
-            InlineKeyboardButton("🫧 ᴏᴡɴᴇʀ 🫧",
-                                 url=f"tg://user?id={config.OWNER_ID}",
-                                 style=enums.ButtonStyle.DEFAULT),
-            InlineKeyboardButton("🍡 sᴏᴜʀᴄᴇ 🍡",
-                                 url="https://github.com/Badmunda05/ShizuMusic/fork",
-                                 style=enums.ButtonStyle.DEFAULT),
-        ],
-    ])
+    kb = start_private_kb()
 
     chat_id = cbq.message.chat.id
 

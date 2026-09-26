@@ -15,11 +15,12 @@ import psutil
 import speedtest
 from pyrogram import filters
 from pyrogram.enums import ParseMode
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
+from pyrogram.types import Message
 
 import config
 from ShizuMusic import bot, assistant, bot_start_time
 from ShizuMusic.modules.block import user_allowed
+from ShizuMusic.utils.buttons import support_kb as supp_markup
 from ShizuMusic.utils.rich_ui import (
     rich_esc,
     rich_heading,
@@ -27,12 +28,6 @@ from ShizuMusic.utils.rich_ui import (
     rich_kv_table,
     rich_send,
 )
-
-
-def supp_markup():
-    return InlineKeyboardMarkup([[
-        InlineKeyboardButton(text="🍬 sᴜᴘᴘᴏʀᴛ 🍬", url=config.SUPPORT_GROUP),
-    ]])
 
 
 # ── /ping ──────────────────────────────────────────────────────────────────────
